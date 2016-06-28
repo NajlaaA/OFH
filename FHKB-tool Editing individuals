@@ -1,33 +1,44 @@
 
+/**
+ *
+ * @author najla
+ */
 import java.util.*;
 import javax.swing.*;
 import java.io.*;
 import java.awt.*;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import com.clarkparsia.pellet.owlapiv3.PelletReasoner;
+//import com.clarkparsia.pellet.owlapiv3.PelletReasoner;
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
-import uk.ac.manchester.cs.jfact.JFactReasoner;
+//import uk.ac.manchester.cs.jfact.JFactReasoner;
 import uk.ac.manchester.cs.jfact.JFactFactory;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
-
-
+import java.util.Collections;
+//import java.net.URI;
+import org.semanticweb.HermiT.Reasoner;
+import org.semanticweb.owlapi.reasoner.Node;
+import org.semanticweb.owlapi.reasoner.NodeSet;
 
 import java.awt.event.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.text.BadLocationException;
+//import javax.swing.text.BadLocationException;
+import org.semanticweb.owlapi.util.OWLEntityRemover;
 
 public class LoadOntology extends javax.swing.JFrame implements ActionListener{
 
    static String moFirst, moLast, moBirth, moDeath, moLabel;
   public String x;
-    OWLOntology ont;
-    String ontologyID="";
-   IRI lin;
+   OWLOntology ont;
+   String ontologyID="";
    OWLOntologyManager manager;
    OWLDataFactory df = OWLManager.getOWLDataFactory();
-   String label1,fath,moth,fullLabel;
+   
+   int reasonerID;
+   OWLReasoner reasoner;
+   
+   
    OWLIndividual mat;
    OWLClass Person= df.getOWLClass(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#Person"));
    OWLClass Man= df.getOWLClass(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#Man"));
@@ -63,6 +74,8 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
+        buttonGroup2 = new javax.swing.ButtonGroup();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
@@ -75,6 +88,9 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         death = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         LName = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        maleButton = new javax.swing.JRadioButton();
+        femaleButton = new javax.swing.JRadioButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         fatherBirth = new javax.swing.JTextField();
@@ -96,11 +112,46 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         list1 = new javax.swing.JList();
-        jButton2 = new javax.swing.JButton();
+        editButton = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        spouseBirth = new javax.swing.JTextField();
+        spouseLast = new javax.swing.JTextField();
+        spouseFirst = new javax.swing.JTextField();
+        spouseDeath = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        spouseM = new javax.swing.JRadioButton();
+        spouseF = new javax.swing.JRadioButton();
         jPanel6 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        execute = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        fatherOfQ = new javax.swing.JRadioButton();
+        motherOfQ = new javax.swing.JRadioButton();
+        jRadioButton5 = new javax.swing.JRadioButton();
+        parentsOfQ = new javax.swing.JRadioButton();
+        jLabel14 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jRadioButton4 = new javax.swing.JRadioButton();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+        jRadioButton3 = new javax.swing.JRadioButton();
+        jRadioButton6 = new javax.swing.JRadioButton();
+        jRadioButton7 = new javax.swing.JRadioButton();
+        jRadioButton8 = new javax.swing.JRadioButton();
+        jPanel9 = new javax.swing.JPanel();
+        personQ = new javax.swing.JRadioButton();
+        manQ = new javax.swing.JRadioButton();
+        womanQ = new javax.swing.JRadioButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         fNew = new javax.swing.JMenuItem();
@@ -165,31 +216,47 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
 
         jLabel5.setText("Year of Death");
 
+        jLabel6.setText("Sex:");
+
+        buttonGroup1.add(maleButton);
+        maleButton.setText("Male");
+
+        buttonGroup1.add(femaleButton);
+        femaleButton.setText("Female");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(9, 9, 9)
+                        .addGap(15, 15, 15)
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fName, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3))
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(LName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(birth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel5)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(death, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(68, 68, 68))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(birth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(death, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(maleButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(femaleButton)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {LName, birth, death, fName});
@@ -197,19 +264,23 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(fName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addGap(26, 26, 26)
+                    .addComponent(jLabel3)
+                    .addComponent(LName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(birth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(death, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel5)
+                    .addComponent(death, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(maleButton)
+                    .addComponent(femaleButton)))
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {LName, birth, death, fName});
@@ -231,9 +302,12 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel13)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addGap(20, 20, 20))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(fatherName, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -261,14 +335,15 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
                     .addComponent(fatherName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(fatherLast, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel8)
-                        .addComponent(fatherBirth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel9))
-                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 20, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(fatherBirth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9))
+                        .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel8))
+                .addGap(0, 10, Short.MAX_VALUE))
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Individual's Mother:"));
@@ -320,12 +395,13 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
                     .addComponent(motherName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
                     .addComponent(motherLast, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel12)
+                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel11)
-                    .addComponent(jLabel12)
-                    .addComponent(motherBirth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(motherBirth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -333,10 +409,10 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
 
         jScrollPane1.setViewportView(list1);
 
-        jButton2.setText("Edit");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        editButton.setText("Edit");
+        editButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                editButtonActionPerformed(evt);
             }
         });
 
@@ -349,6 +425,13 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
             }
         });
 
+        deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -357,29 +440,134 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3)
-                        .addGap(16, 16, 16)
-                        .addComponent(jButton4)
-                        .addGap(0, 6, Short.MAX_VALUE))))
+                        .addGap(9, 9, 9)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(22, 22, 22))))
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {deleteButton, editButton, jButton3, jButton4});
+
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
-                .addContainerGap())
+                    .addComponent(editButton)
+                    .addComponent(jButton3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(deleteButton)
+                    .addComponent(jButton4)))
         );
 
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {deleteButton, editButton, jButton3, jButton4});
+
         jButton1.setText("Exit");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Individual's Spouse"));
+        jPanel10.setEnabled(false);
+
+        jLabel15.setText("First Name");
+        jLabel15.setEnabled(false);
+
+        jLabel16.setText("Year of Birth");
+        jLabel16.setEnabled(false);
+
+        jLabel17.setText("Last Name");
+        jLabel17.setEnabled(false);
+
+        jLabel18.setText("Year of Death");
+        jLabel18.setEnabled(false);
+
+        spouseBirth.setEnabled(false);
+
+        spouseLast.setEnabled(false);
+
+        spouseFirst.setEnabled(false);
+
+        spouseDeath.setEnabled(false);
+
+        jLabel19.setText("Sex:");
+        jLabel19.setEnabled(false);
+
+        spouseM.setText("Male");
+        spouseM.setEnabled(false);
+
+        spouseF.setText("Female");
+        spouseF.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel16)
+                        .addComponent(jLabel15))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jLabel19)
+                        .addGap(19, 19, 19)
+                        .addComponent(spouseM)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(spouseFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(spouseBirth, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel18))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(spouseDeath, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(spouseLast, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(spouseF)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel15)
+                        .addComponent(jLabel17)
+                        .addComponent(spouseLast, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(spouseFirst, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(spouseBirth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel16)
+                            .addComponent(jLabel18)
+                            .addComponent(spouseDeath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel19)
+                    .addComponent(spouseM)
+                    .addComponent(spouseF)))
+        );
+
+        jPanel10Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {spouseBirth, spouseDeath, spouseFirst, spouseLast});
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -388,50 +576,236 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 48, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton6))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton6)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Adding", jPanel2);
 
+        jPanel7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane2.setViewportView(jTextArea1);
+
+        execute.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        execute.setText("Execute");
+        execute.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                executeActionPerformed(evt);
+            }
+        });
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Query for specific individual", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
+
+        buttonGroup2.add(fatherOfQ);
+        fatherOfQ.setText("Father of");
+        fatherOfQ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fatherOfQActionPerformed(evt);
+            }
+        });
+
+        buttonGroup2.add(motherOfQ);
+        motherOfQ.setText("Mother of");
+
+        buttonGroup2.add(jRadioButton5);
+        jRadioButton5.setText("Ancestors of");
+
+        buttonGroup2.add(parentsOfQ);
+        parentsOfQ.setText("Parents of");
+
+        jLabel14.setText("Individual Label: ( i.e.  FirstName_LastName_BirthYear)");
+
+        buttonGroup2.add(jRadioButton4);
+        jRadioButton4.setText("Children of");
+
+        jRadioButton1.setText("Husband");
+
+        jRadioButton2.setText("Wife");
+
+        jRadioButton3.setText("Spouse");
+
+        jRadioButton6.setText("Partner");
+
+        jRadioButton7.setText("Sons");
+
+        jRadioButton8.setText("Daughter");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(fatherOfQ)
+                            .addComponent(motherOfQ)
+                            .addComponent(parentsOfQ)
+                            .addComponent(jRadioButton4))
+                        .addGap(168, 168, 168)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButton1)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jRadioButton6)
+                                    .addComponent(jRadioButton3))
+                                .addGap(140, 140, 140)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jRadioButton7)
+                                    .addComponent(jRadioButton8)))
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addComponent(jRadioButton2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 164, Short.MAX_VALUE)
+                                .addComponent(jRadioButton5)))))
+                .addGap(132, 132, 132))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fatherOfQ)
+                    .addComponent(jRadioButton6)
+                    .addComponent(jRadioButton8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(motherOfQ)
+                    .addComponent(jRadioButton3)
+                    .addComponent(jRadioButton7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(parentsOfQ)
+                    .addComponent(jRadioButton2)
+                    .addComponent(jRadioButton5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jRadioButton4)
+                    .addComponent(jRadioButton1))
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+
+        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "General Query", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
+
+        buttonGroup2.add(personQ);
+        personQ.setText("Person");
+
+        buttonGroup2.add(manQ);
+        manQ.setText("Man");
+
+        buttonGroup2.add(womanQ);
+        womanQ.setText("Woman");
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(manQ)
+                    .addComponent(womanQ)
+                    .addComponent(personQ))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addComponent(personQ)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(manQ)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(womanQ)
+                .addGap(0, 17, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(execute, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2))
+                .addContainerGap(67, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(execute, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 788, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 543, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        jTabbedPane1.addTab("tab4", jPanel6);
+        jTabbedPane1.addTab("DL Query", jPanel6);
 
         jMenu1.setText("File");
 
@@ -596,7 +970,6 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
             manager = OWLManager.createOWLOntologyManager();
             File file1 = new File("C://Users/najla/Desktop/MSc project/OWL API/fhkb-minimumclasses-noabox.owl");
             ont = manager.loadOntologyFromOntologyDocument(file1);
-            lin= IRI.create(file1);
            
         }catch(OWLOntologyCreationException e )
         {
@@ -621,6 +994,11 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         {
         System.err.println("OWLOntologyCreationException: " + e.getMessage()); 
         }
+        //Enable individual's spouse panel
+        jPanel10.setEnabled(true);
+        Component[] com = jPanel10.getComponents();
+        for (int a = 0; a < com.length; a++) 
+             com[a].setEnabled(true);
     }                                      
 
     private void FhMaxActionPerformed(java.awt.event.ActionEvent evt) {                                      
@@ -635,30 +1013,39 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         {
         System.err.println("OWLOntologyCreationException: " + e.getMessage()); 
         }
+        
+        //Enable individual's spouse panel
+        jPanel10.setEnabled(true);
+        Component[] com = jPanel10.getComponents();
+        for (int a = 0; a < com.length; a++) 
+             com[a].setEnabled(true);
     }                                     
 
     private void hermitActionPerformed(java.awt.event.ActionEvent evt) {                                       
-        // Now, we instantiate HermiT by creating an instance of the Reasoner class in the package org.semanticweb.HermiT.
-         org.semanticweb.HermiT.Reasoner hermit=new org.semanticweb.HermiT.Reasoner(ont);
-        // Finally, we output whether the ontology is consistent.
-        System.out.println(hermit.isConsistent());
+       
+         reasonerID=1;
+         Reasoner.ReasonerFactory rf = new Reasoner.ReasonerFactory();
+         reasoner=rf.createReasoner(ont);
+        
+        System.out.println(reasoner.isConsistent());
     }                                      
 
     private void pelletActionPerformed(java.awt.event.ActionEvent evt) {                                       
         
         PelletReasonerFactory reasonerFactory = new PelletReasonerFactory();
-        PelletReasoner r = reasonerFactory.createReasoner(ont);
+        reasoner = reasonerFactory.createReasoner(ont);
+        reasonerID=2;
         //PelletReasoner Preasoner = PelletReasonerFactory.getInstance().createNonBufferingReasoner( ont );
         //manager.addOntologyChangeListener( Preasoner );
-        System.out.println(r.isConsistent());
+        System.out.println(reasoner.isConsistent());
 
     }                                      
 
     private void factPlusActionPerformed(java.awt.event.ActionEvent evt) {                                         
-      OWLReasoner reasoner;
-      JFactFactory factory = new JFactFactory();
-            reasoner = factory.createReasoner(ont);
-      System.out.println(reasoner.isConsistent());
+       JFactFactory factory = new JFactFactory();
+       reasoner = factory.createReasoner(ont);
+       reasonerID=3;
+       System.out.println(reasoner.isConsistent());
     }                                        
 
     private void deathActionPerformed(java.awt.event.ActionEvent evt) {                                      
@@ -671,16 +1058,21 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {                                         
 
+       String label1,fath,moth, spouseLabel;
         label1=fName.getText()+"_"+LName.getText()+"_"+birth.getText();
-
         fath=fatherName.getText()+"_"+fatherLast.getText()+"_"+fatherBirth.getText();
-
         moth= motherName.getText()+"_"+motherLast.getText()+"_"+motherBirth.getText();
         
-          OWLIndividual matt = df.getOWLNamedIndividual(IRI.create(lin + "#"+label1));
-          OWLClassAssertionAxiom classAssertion = df.getOWLClassAssertionAxiom(Person, matt);
-          //AddAxiom addAxiom = new AddAxiom(ont, classAssertion);
-          manager.addAxiom(ont, classAssertion);
+          OWLIndividual matt = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+label1));
+          OWLClassAssertionAxiom ca1;
+          if(maleButton.isSelected())
+               ca1 = df.getOWLClassAssertionAxiom(Man, matt);
+          else if(femaleButton.isSelected())
+               ca1 = df.getOWLClassAssertionAxiom(Woman, matt);
+          else
+             ca1 = df.getOWLClassAssertionAxiom(Person, matt);
+        
+          manager.addAxiom(ont, ca1);
        
         if(!(model.contains(label1)) )
         {  
@@ -690,10 +1082,14 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
           firstNames[count]= fName.getText();
           lastNames[count]= LName.getText();
           birthYears[count]= birth.getText();
+          if(!death.getText().isEmpty())
+              deathYears[count]=death.getText();
           count++;
           new AutoTextField(fName, firstNames);
           new AutoTextField(LName, lastNames);
           new AutoTextField(birth, birthYears);
+          if(!death.getText().isEmpty())
+              new AutoTextField(death, deathYears);
         
           OWLAxiom asser1= df.getOWLDataPropertyAssertionAxiom(hasFirstName, matt, fName.getText());
           manager.addAxiom(ont,asser1);
@@ -705,6 +1101,49 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         else
             JOptionPane.showMessageDialog(new JFrame(), "The individual is already exist", "Dialog",
         JOptionPane.INFORMATION_MESSAGE);
+        
+        if(ontologyID.equals("core") || ontologyID.equals("most"))
+        {
+            if(!spouseFirst.getText().isEmpty())
+            {
+              spouseLabel=spouseFirst.getText()+"_"+spouseLast.getText()+"_"+spouseBirth.getText();
+              OWLIndividual spouse = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+spouseLabel));
+              OWLClassAssertionAxiom ca2;
+          if(spouseM.isSelected())
+               ca2 = df.getOWLClassAssertionAxiom(Man, spouse);
+          else if(spouseF.isSelected())
+               ca2 = df.getOWLClassAssertionAxiom(Woman, spouse);
+          else
+             ca2 = df.getOWLClassAssertionAxiom(Person, spouse);
+        
+          manager.addAxiom(ont, ca2);
+       
+        if(!(model.contains(spouseLabel)) )
+        {  
+          model.addElement(spouseLabel);
+          
+          //Creating String arrays for AutoComplete textfields
+          firstNames[count]= spouseFirst.getText();
+          lastNames[count]= spouseLast.getText();
+          birthYears[count]= spouseBirth.getText();
+          if(!spouseDeath.getText().isEmpty())
+              deathYears[count]=spouseDeath.getText();
+          count++;
+          new AutoTextField(spouseFirst, firstNames);
+          new AutoTextField(spouseLast, lastNames);
+          new AutoTextField(spouseBirth, birthYears);
+          if(!spouseDeath.getText().isEmpty())
+              new AutoTextField(spouseDeath, deathYears);
+        
+          OWLAxiom asser1= df.getOWLDataPropertyAssertionAxiom(hasFirstName, spouse, spouseFirst.getText());
+          manager.addAxiom(ont,asser1);
+          OWLAxiom asser2= df.getOWLDataPropertyAssertionAxiom(hasFamilyName, spouse, spouseLast.getText());
+          manager.addAxiom(ont,asser2);
+          OWLAxiom asser3= df.getOWLDataPropertyAssertionAxiom(hasBirthYear, spouse, spouseBirth.getText());
+          manager.addAxiom(ont,asser3);
+        }
+         }
+        }
 
         if(!fatherName.getText().isEmpty()){
             
@@ -720,7 +1159,7 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
             new AutoTextField(fatherLast, lastNames);
             new AutoTextField(fatherBirth, birthYears);}
           
-            OWLIndividual father = df.getOWLNamedIndividual(IRI.create(lin + "#"+fath));
+            OWLIndividual father = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+fath));
             OWLClassAssertionAxiom classAssertion2 = df.getOWLClassAssertionAxiom(Man, father);
             manager.addAxiom(ont, classAssertion2);
             
@@ -749,7 +1188,7 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
             new AutoTextField(motherBirth, birthYears);
             }
             
-            OWLIndividual mother = df.getOWLNamedIndividual(IRI.create(lin + "#"+moth));
+            OWLIndividual mother = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+moth));
             OWLClassAssertionAxiom classAssertion3 = df.getOWLClassAssertionAxiom(Woman, mother);
             manager.addAxiom(ont, classAssertion3);
 
@@ -782,14 +1221,23 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         // TODO add your handling code here:
     }                                        
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
        
-       String first="", last="", bir="", dea="";
+       String first="", last="", bir="", dea="", cls="";
        OWLIndividual mama=null, dada=null;
+       String motherLabel="";  String fatherLabel="";
        String label2= (String)list1.getSelectedValue();
-       OWLIndividual ind = df.getOWLNamedIndividual(IRI.create(lin + "#"+label2));
+       OWLIndividual ind = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+label2));
        
-      Set<OWLLiteral> FN= ind.getDataPropertyValues(hasFirstName, ont);
+       Set<OWLClassExpression> x=ind.getTypes(ont);
+       for(OWLClassExpression i:x)
+           cls=i.getSignature().toString();
+           String[] parts3= cls.split("#");
+       String part3=parts3[1];
+       String classType= part3.substring(0,part3.length()-2);
+       
+       
+       Set<OWLLiteral> FN= ind.getDataPropertyValues(hasFirstName, ont);
        for(OWLLiteral f:FN)
            first=f.getLiteral();
        
@@ -804,46 +1252,119 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
        Set<OWLLiteral> DY= ind.getDataPropertyValues(hasDeathYear, ont);
        for(OWLLiteral d:DY)
            dea=d.getLiteral();
-       
+     
        Set<OWLIndividual> mom= ind.getObjectPropertyValues(hasMother, ont);
        for(OWLIndividual m:mom)
            mama=m;
-       String mLabel = mama.getSignature().toString();
-       String[] parts= mLabel.split("#");
-       String part=parts[1];
-       String motherLabel= part.substring(0,part.length()-2);
-       System.out.println("mom lab:"+motherLabel);
+      
+       if(mama != null)
+       { String mLabel = mama.getSignature().toString();
+       String[] parts1= mLabel.split("#");
+       String part1=parts1[1];
+       motherLabel= part1.substring(0,part1.length()-2);
+       }
        
        Set<OWLIndividual> dad= ind.getObjectPropertyValues(hasFather, ont);
        for(OWLIndividual d:dad)
            dada=d;
-       String dLabel = dada.getSignature().toString();
+       if(dada != null)
+       {String dLabel = dada.getSignature().toString();
        String[] parts2= dLabel.split("#");
        String part2=parts2[1];
-       String fatherLabel= part2.substring(0,part2.length()-2);
-       System.out.println("dad lab:"+fatherLabel);
+       fatherLabel= part2.substring(0,part2.length()-2);
+       }
        
       EditIndividual editFrame= new EditIndividual();
        editFrame.setVisible(true);
-       editFrame.setValues(ontologyID,label2,first,last,bir, dea,motherLabel,fatherLabel);
+       editFrame.setValues(ontologyID,label2,first,last,bir, dea,motherLabel,fatherLabel,classType, model);
+       
+       
        
      
+    }                                          
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        String deleteLabel= (String)list1.getSelectedValue();
+        model.removeElement(deleteLabel);
+        OWLNamedIndividual deleteInd = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+deleteLabel));
+        OWLEntityRemover remover = new OWLEntityRemover(manager, Collections.singleton(ont));
+        deleteInd.accept(remover);
+        manager.applyChanges(remover.getChanges());
+        remover.reset();
+        try {
+
+            manager.saveOntology(ont);
+        } catch (OWLOntologyStorageException ex) {
+            Logger.getLogger(LoadOntology.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }                                            
+
+    private void fatherOfQActionPerformed(java.awt.event.ActionEvent evt) {                                          
+
+    }                                         
+
+    private void executeActionPerformed(java.awt.event.ActionEvent evt) {                                        
+       String indQ= jTextField2.getText();
+       OWLNamedIndividual indQuery = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+indQ));
+        
+       
+       Node<OWLClass> x=reasoner.getEquivalentClasses(Man);
+       for(OWLClass xx:x)
+           System.out.println(xx.getIRI().getFragment());
+       if(personQ.isSelected())
+       {
+          
+            NodeSet<OWLNamedIndividual> inds=reasoner.getInstances(Man, true);
+           for (Node<OWLNamedIndividual> n : inds) {
+            for (OWLNamedIndividual i : n.getEntities()) {
+                System.out.println("HHH   "+i.getIRI().getFragment());
+            
+
+        }   
+       }
+       }
+       
+       if(manQ.isSelected())
+       {
+          Set<OWLIndividual> inds= Man.getIndividuals(ont);
+          for(OWLIndividual i:inds)
+          { jTextArea1.setText(i.getSignature().toString());
+             System.out.println(i.getSignature().toString());}
+       }
+       
+       OWLIndividual Qdada=null;
+       parentsOfQ.setEnabled(false);
+       
+       if(fatherOfQ.isSelected())
+      {
+         Set<OWLIndividual> dad= indQuery.getObjectPropertyValues(hasFather, ont);
+       for(OWLIndividual d:dad)
+           Qdada=d; 
+       if(Qdada != null)
+       {String QdLabel = Qdada.getSignature().toString();
+       String[] Qdparts= QdLabel.split("#");
+       String dpart=Qdparts[1];
+       String fatherLabel= dpart.substring(0,dpart.length()-2);
+       jTextArea1.setText(fatherLabel);
+       } 
+       else
+         jTextArea1.setText("No result");  
+      }
+    }                                       
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // TODO add your handling code here:
     }                                        
 
     /**
      * @param args the command line arguments
      */
-    public void setModifyValues(String ontID,String indLabel,String a,String b, String c, String d, String Emother,String Efather )
+    public void setModifyValues(String ontID,String preIndLabel,String moFirst,String moLast, String moBirth, String moDeath, String Emother,String Efather, DefaultListModel m , int cls)
     {
-      moFirst=a;
-      moLast=b;
-      moBirth=c;
-      moDeath=d;
-      //to delete previous label
-      String preLabel= indLabel;
+      
+        
       moLabel=moFirst+"_"+moLast+"_"+moBirth;
-      System.out.println(a+"  "+b+"  "+c+" "+d+"_"+indLabel+"???"+moLabel);
-      moLabel=moFirst+"_"+moLast+"_"+moBirth;
+      model=m;
       
       //Load ontolgy again
      if(ontID.equals("min"))
@@ -851,7 +1372,6 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
             manager = OWLManager.createOWLOntologyManager();
             File file1 = new File("C://Users/najla/Desktop/MSc project/OWL API/fhkb-minimumclasses-noabox.owl");
             ont = manager.loadOntologyFromOntologyDocument(file1);
-            lin= IRI.create(file1);
            
           }catch(OWLOntologyCreationException e )
           {
@@ -883,25 +1403,51 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         System.err.println("OWLOntologyCreationException: " + e.getMessage()); 
         }
       }
-      OWLIndividual ind = df.getOWLNamedIndividual(IRI.create(lin +"#"+moLabel));
-      OWLClassAssertionAxiom classAssertion11 = df.getOWLClassAssertionAxiom(Person, ind);
+     
+     //to delete previous label
+     OWLNamedIndividual removedInd = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+preIndLabel));
+     OWLEntityRemover remover = new OWLEntityRemover(manager, Collections.singleton(ont));
+     removedInd.accept(remover);
+     manager.applyChanges(remover.getChanges());
+     remover.reset();
+     list1.setModel(model);
+     model.removeElement(preIndLabel);
+      
+      //Adding the new label
+      OWLIndividual ind = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+moLabel));
+      OWLClassAssertionAxiom classAssertion11;
+      OWLClassAssertionAxiom ca1;
+          if(cls==1)
+               classAssertion11 = df.getOWLClassAssertionAxiom(Man, ind);
+          else if(cls==2)
+               classAssertion11= df.getOWLClassAssertionAxiom(Woman, ind);
+          else
+            classAssertion11= df.getOWLClassAssertionAxiom(Person, ind);
+        
+         
       manager.addAxiom(ont, classAssertion11);
-      //Adding new data property
-       OWLAxiom asser11= df.getOWLDataPropertyAssertionAxiom(hasFirstName, ind, a);
+      model.addElement(moLabel);
+      list1.setModel(model);
+      
+      
+       //Adding new data property
+       OWLAxiom asser11= df.getOWLDataPropertyAssertionAxiom(hasFirstName, ind, moFirst);
           manager.addAxiom(ont,asser11);
           OWLAxiom asser22= df.getOWLDataPropertyAssertionAxiom(hasFamilyName, ind, moLast);
           manager.addAxiom(ont,asser22);
           OWLAxiom asser33= df.getOWLDataPropertyAssertionAxiom(hasBirthYear, ind, moBirth);
           manager.addAxiom(ont,asser33);
           
-       //Adding father 
-          OWLIndividual indFather = df.getOWLNamedIndividual(IRI.create(lin + "#"+Efather));
+       //Adding father
+          if(!Efather.isEmpty())
+          {OWLIndividual indFather = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+Efather));
           OWLAxiom assertion88 = df.getOWLObjectPropertyAssertionAxiom(hasFather, ind, indFather);
-          manager.addAxiom(ont, assertion88);
+          manager.addAxiom(ont, assertion88);}
        //Adding mother
-          OWLIndividual indMother = df.getOWLNamedIndividual(IRI.create(lin + "#"+Emother));
+          if(!Emother.isEmpty())
+          {OWLIndividual indMother = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+Emother));
           OWLAxiom assertion99 = df.getOWLObjectPropertyAssertionAxiom(hasMother, ind, indMother);
-          manager.addAxiom(ont, assertion99);
+          manager.addAxiom(ont, assertion99);}
             
        try {
 
@@ -951,7 +1497,12 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JMenuItem FhMin;
     private javax.swing.JTextField LName;
     private javax.swing.JTextField birth;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JTextField death;
+    private javax.swing.JButton deleteButton;
+    private javax.swing.JButton editButton;
+    private javax.swing.JButton execute;
     private javax.swing.JMenuItem fExit;
     private javax.swing.JTextField fName;
     private javax.swing.JMenuItem fNew;
@@ -962,9 +1513,10 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JTextField fatherBirth;
     private javax.swing.JTextField fatherLast;
     private javax.swing.JTextField fatherName;
+    private javax.swing.JRadioButton fatherOfQ;
+    private javax.swing.JRadioButton femaleButton;
     private javax.swing.JRadioButtonMenuItem hermit;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton6;
@@ -973,10 +1525,17 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -996,21 +1555,48 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JRadioButton jRadioButton3;
+    private javax.swing.JRadioButton jRadioButton4;
+    private javax.swing.JRadioButton jRadioButton5;
+    private javax.swing.JRadioButton jRadioButton6;
+    private javax.swing.JRadioButton jRadioButton7;
+    private javax.swing.JRadioButton jRadioButton8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JList list1;
+    private javax.swing.JRadioButton maleButton;
+    private javax.swing.JRadioButton manQ;
     private javax.swing.JTextField motherBirth;
     private javax.swing.JTextField motherLast;
     private javax.swing.JTextField motherName;
+    private javax.swing.JRadioButton motherOfQ;
+    private javax.swing.JRadioButton parentsOfQ;
     private javax.swing.JMenuItem pellet;
+    private javax.swing.JRadioButton personQ;
+    private javax.swing.JTextField spouseBirth;
+    private javax.swing.JTextField spouseDeath;
+    private javax.swing.JRadioButton spouseF;
+    private javax.swing.JTextField spouseFirst;
+    private javax.swing.JTextField spouseLast;
+    private javax.swing.JRadioButton spouseM;
+    private javax.swing.JRadioButton womanQ;
     // End of variables declaration                   
 
     @Override
@@ -1018,294 +1604,3 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-public class EditIndividual extends javax.swing.JFrame {
-
-    /**
-     * Creates new form EditIndividual
-     */
-    String first1="",last1="",birth1="",death1="";
-    String ontID, mother, father;
-    String label=" ";
-    public EditIndividual() {
-        initComponents();
-    }
-    
-    public void setValues(String ontologyID,String lab,String first, String last, String birth, String death, String mLabel, String fLabel)
-    {
-      jTextField1.setText(first);
-      jTextField2.setText(last);
-      jTextField3.setText(birth);
-      jTextField4.setText(death);
-      ontID= ontologyID;
-      label=lab;
-      mother= mLabel;
-      father= fLabel;
-    }
-   
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
-    private void initComponents() {
-
-        jPanel1 = new javax.swing.JPanel();
-        jTextField3 = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Edit Individual");
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Individual Information"));
-
-        jLabel3.setText("Year of Birth:");
-
-        jLabel2.setText("Last Name:");
-
-        jLabel4.setText("Year of Death:");
-
-        jLabel1.setText("First Name:");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
-                    .addComponent(jTextField3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
-                    .addComponent(jTextField2))
-                .addGap(34, 34, 34))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(17, 17, 17))
-        );
-
-        jButton1.setText("Modify");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pack();
-    }// </editor-fold>                        
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-     
-        first1= jTextField1.getText();
-        last1= jTextField2.getText();
-        birth1=jTextField3.getText();
-        death1=jTextField4.getText();
-        
-        LoadOntology A =new LoadOntology();
-       
-        A.setModifyValues(ontID,label,first1,last1, birth1, death1, mother,father);
-    }                                        
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditIndividual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditIndividual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditIndividual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditIndividual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EditIndividual().setVisible(true);
-            }
-        });
-    }
-
-    // Variables declaration - do not modify                     
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    // End of variables declaration                   
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.JTextField;
-import javax.swing.text.BadLocationException;
-public class AutoTextField {
-    
-        JTextField textField;
-        String[]vector;
-       
-        public AutoTextField(JTextField textField, String[]vector)
-        {
-            this.textField=textField;
-            this.textField.addKeyListener(new keyforString(this.textField, vector));
-            this.vector=vector;
-           
-        }
-
-        private class keyforString extends KeyAdapter
-        {
-            String[] data = new String[]{"-"};
-            JTextField textField;
-            public keyforString(JTextField txt, String[]data)
-            {
-                this.textField=txt;
-                this.data= data;
-                textField.addKeyListener(this);
-            }
-            public void keyReleased(KeyEvent e)
-            {
-                if (!(e.getKeyCode() >= 65 && e.getKeyCode() <= 90 || e.getKeyCode() >= 96 && e.getKeyCode() <= 105 || e.getKeyCode() == e.VK_ENTER))
-                    return;
-                if (textField.getText().isEmpty())
-                    return;
-                if (data.length==0)
-                    return;
-                addTextAndSelectToTextFieldToRest(textField, getTextFromVector(textField.getText(), data));
-            }
-        }
-
-
-    
-    public static void addTextAndSelectToTextFieldToRest(JTextField textField, String newData)
-    {
-        String SearchedItem="";
-        int Actual=textField.getText().length();
-        
-
-        SearchedItem = newData.substring(Actual, newData.length());
-        if (newData.isEmpty() || SearchedItem.isEmpty()) {
-            return;
-        }
-
-        try
-        {
-            textField.getDocument().insertString(textField.getCaretPosition(), SearchedItem, null);
-        } catch (BadLocationException ex) {
-            ex.printStackTrace();
-        }
-        textField.select(Actual, textField.getText().length());
-        
-    }
-    
-    public static String getTextFromVector(String dataSearch, String[]items)
-    {
-
-        int position = getPosition(dataSearch, items);
-        if (position==-1)
-            return dataSearch;
-        return items[position];
-    }
-    public static int getPosition(String dataS, String[]items)
-    {
-        try {
-            for (int i = 0; i < items.length; i++)
-                if (dataS.equals(items[i].substring(0, dataS.length())))
-                    return i;
-        } catch (Exception e) {
-            return -1;
-        }
-        return -1;
-    }
-}
-
-    
-
-
-    
-
