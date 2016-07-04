@@ -44,11 +44,15 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
    OWLClass Man= df.getOWLClass(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#Man"));
    OWLClass Woman= df.getOWLClass(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#Woman"));
    OWLClass Marriage= df.getOWLClass(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#Marriage"));
+   
    OWLObjectProperty hasFather= df.getOWLObjectProperty(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#hasFather"));
    OWLObjectProperty hasMother= df.getOWLObjectProperty(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#hasMother"));
    OWLObjectProperty hasMalePartner= df.getOWLObjectProperty(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#hasMalePartner"));
    OWLObjectProperty hasFemalePartner= df.getOWLObjectProperty(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#hasFemalePartner"));
    OWLObjectProperty hasPartner= df.getOWLObjectProperty(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#hasPartner"));
+   OWLObjectProperty hasParent= df.getOWLObjectProperty(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#hasParent"));
+   OWLObjectProperty hasChild= df.getOWLObjectProperty(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#hasChild"));
+   
    OWLDataProperty hasBirthYear= df.getOWLDataProperty(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#hasBirthYear"));
    OWLDataProperty hasDeathYear= df.getOWLDataProperty(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#hasDeathYear"));
    OWLDataProperty hasFirstName= df.getOWLDataProperty(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#hasFirstGivenName"));
@@ -62,6 +66,8 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
    String[] lastNames =new String[1000];
    String[] birthYears =new String[1000];
    String[] deathYears =new String[1000];
+   String[] marriageLabels= new String[1000];
+   int Mcount=0;
    int count=0;
    
     public LoadOntology() {
@@ -150,11 +156,11 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         jPanel8 = new javax.swing.JPanel();
         fatherOfQ = new javax.swing.JRadioButton();
         motherOfQ = new javax.swing.JRadioButton();
-        jRadioButton5 = new javax.swing.JRadioButton();
+        ancestorsQ = new javax.swing.JRadioButton();
         parentsOfQ = new javax.swing.JRadioButton();
         jLabel14 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
-        jRadioButton4 = new javax.swing.JRadioButton();
+        childQ = new javax.swing.JRadioButton();
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
         jRadioButton3 = new javax.swing.JRadioButton();
@@ -596,6 +602,11 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         });
 
         deleteMarriage.setText("Delete");
+        deleteMarriage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteMarriageActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -694,16 +705,16 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         buttonGroup2.add(motherOfQ);
         motherOfQ.setText("Mother of");
 
-        buttonGroup2.add(jRadioButton5);
-        jRadioButton5.setText("Ancestors of");
+        buttonGroup2.add(ancestorsQ);
+        ancestorsQ.setText("Ancestors of");
 
         buttonGroup2.add(parentsOfQ);
         parentsOfQ.setText("Parents of");
 
         jLabel14.setText("Individual Label: ( i.e.  FirstName_LastName_BirthYear)");
 
-        buttonGroup2.add(jRadioButton4);
-        jRadioButton4.setText("Children of");
+        buttonGroup2.add(childQ);
+        childQ.setText("Children of");
 
         jRadioButton1.setText("Husband");
 
@@ -725,31 +736,30 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(177, 177, 177))
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(fatherOfQ)
                             .addComponent(motherOfQ)
                             .addComponent(parentsOfQ)
-                            .addComponent(jRadioButton4))
+                            .addComponent(childQ))
                         .addGap(168, 168, 168)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButton1)
                             .addGroup(jPanel8Layout.createSequentialGroup()
                                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jRadioButton6)
-                                    .addComponent(jRadioButton3))
+                                    .addComponent(jRadioButton3)
+                                    .addComponent(jRadioButton2))
                                 .addGap(140, 140, 140)
                                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ancestorsQ)
                                     .addComponent(jRadioButton7)
-                                    .addComponent(jRadioButton8)))
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addComponent(jRadioButton2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 164, Short.MAX_VALUE)
-                                .addComponent(jRadioButton5)))))
-                .addGap(132, 132, 132))
+                                    .addComponent(jRadioButton8))))
+                        .addContainerGap(142, Short.MAX_VALUE))))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -772,10 +782,10 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(parentsOfQ)
                     .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton5))
+                    .addComponent(ancestorsQ))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton4)
+                    .addComponent(childQ)
                     .addComponent(jRadioButton1))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
@@ -1204,6 +1214,7 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
         
         marriageModel.addElement(marriageLabel);
         list2.setModel(marriageModel);
+        marriageLabels[Mcount]= marriageLabel;
        
         if(!(model.contains(spouseLabel)) )
         {   
@@ -1427,45 +1438,104 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
        Node<OWLClass> x=reasoner.getEquivalentClasses(Man);
        for(OWLClass xx:x)
            System.out.println(xx.getIRI().getFragment());
+      
        if(personQ.isSelected())
        {
-          
-            NodeSet<OWLNamedIndividual> inds=reasoner.getInstances(Man, true);
-           for (Node<OWLNamedIndividual> n : inds) {
-            for (OWLNamedIndividual i : n.getEntities()) {
-                System.out.println("HHH   "+i.getIRI().getFragment());
-            
-
-        }   
-       }
-       }
+           jTextArea1.setText("");
+           NodeSet<OWLNamedIndividual> inds1=reasoner.getInstances(Person, false);
+           for (Node<OWLNamedIndividual> m : inds1) {
+            for (OWLNamedIndividual j : m.getEntities()) {
+                if(jTextArea1.getText().equals(""))
+                  jTextArea1.setText(j.getIRI().getFragment());
+                else
+                  jTextArea1.setText(jTextArea1.getText()+ "\n"+j.getIRI().getFragment());
+            }}  
+       }   
        
        if(manQ.isSelected())
        {
-          Set<OWLIndividual> inds= Man.getIndividuals(ont);
-          for(OWLIndividual i:inds)
-          { jTextArea1.setText(i.getSignature().toString());
-             System.out.println(i.getSignature().toString());}
+          jTextArea1.setText("");
+          NodeSet<OWLNamedIndividual> inds2=reasoner.getInstances(Man, true);
+           for (Node<OWLNamedIndividual> m : inds2) {
+            for (OWLNamedIndividual j : m.getEntities()) {
+                if(jTextArea1.getText().equals(""))
+                  jTextArea1.setText(j.getIRI().getFragment());
+                else
+                  jTextArea1.setText(jTextArea1.getText()+ "\n"+j.getIRI().getFragment());
+            }}  
        }
        
-       OWLIndividual Qdada=null;
-       parentsOfQ.setEnabled(false);
+       if(womanQ.isSelected())
+       {
+           jTextArea1.setText("");
+           NodeSet<OWLNamedIndividual> inds2=reasoner.getInstances(Woman, true);
+           for (Node<OWLNamedIndividual> m : inds2) {
+            for (OWLNamedIndividual j : m.getEntities()) {
+                if(jTextArea1.getText().equals(""))
+                  jTextArea1.setText(j.getIRI().getFragment());
+                else
+                  jTextArea1.setText(jTextArea1.getText()+ "\n"+j.getIRI().getFragment());
+            }}    
+       }
+       
        
        if(fatherOfQ.isSelected())
       {
-         Set<OWLIndividual> dad= indQuery.getObjectPropertyValues(hasFather, ont);
-       for(OWLIndividual d:dad)
-           Qdada=d; 
-       if(Qdada != null)
-       {String QdLabel = Qdada.getSignature().toString();
-       String[] Qdparts= QdLabel.split("#");
-       String dpart=Qdparts[1];
-       String fatherLabel= dpart.substring(0,dpart.length()-2);
-       jTextArea1.setText(fatherLabel);
-       } 
-       else
-         jTextArea1.setText("No result");  
+          jTextArea1.setText("");
+          NodeSet<OWLNamedIndividual> dad=reasoner.getObjectPropertyValues(indQuery, hasFather);
+         
+          Set<OWLNamedIndividual> values = dad.getFlattened();
+            for (OWLNamedIndividual j : values) {
+                if(jTextArea1.getText().equals(""))
+                  jTextArea1.setText(j.getIRI().getFragment());
+                else
+                  jTextArea1.setText(jTextArea1.getText()+ "\n"+j.getIRI().getFragment());
+            }
       }
+       
+       
+       if(motherOfQ.isSelected())
+      {
+          jTextArea1.setText("");
+          NodeSet<OWLNamedIndividual> mom=reasoner.getObjectPropertyValues(indQuery, hasMother);
+         
+          Set<OWLNamedIndividual> values = mom.getFlattened();
+            for (OWLNamedIndividual j : values) {
+                if(jTextArea1.getText().equals(""))
+                  jTextArea1.setText(j.getIRI().getFragment());
+                else
+                  jTextArea1.setText(jTextArea1.getText()+ "\n"+j.getIRI().getFragment());
+            }
+      }
+       
+      if(parentsOfQ.isSelected())
+       {
+           jTextArea1.setText("");
+           NodeSet<OWLNamedIndividual> parent=reasoner.getObjectPropertyValues(indQuery, hasParent);
+         
+          Set<OWLNamedIndividual> values = parent.getFlattened();
+            for (OWLNamedIndividual j : values) {
+                if(jTextArea1.getText().equals(""))
+                  jTextArea1.setText(j.getIRI().getFragment());
+                else
+                  jTextArea1.setText(jTextArea1.getText()+ "\n"+j.getIRI().getFragment());
+            }
+       }    
+         
+      if(childQ.isSelected())
+      {
+         jTextArea1.setText("");
+         NodeSet<OWLNamedIndividual> children =reasoner.getObjectPropertyValues(indQuery, hasChild);
+         
+          Set<OWLNamedIndividual> values = children.getFlattened();
+            for (OWLNamedIndividual j : values) {
+                if(jTextArea1.getText().equals(""))
+                  jTextArea1.setText(j.getIRI().getFragment());
+                else
+                  jTextArea1.setText(jTextArea1.getText()+ "\n"+j.getIRI().getFragment());
+            } 
+      }
+       
     }                                       
 
     private void editMarriageActionPerformed(java.awt.event.ActionEvent evt) {                                             
@@ -1507,6 +1577,22 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
        EMFrame.setValues(mYear, mPartnerLabel, fPartnerLabel,ontologyID,label,marriageModel);
        
     }                                            
+
+    private void deleteMarriageActionPerformed(java.awt.event.ActionEvent evt) {                                               
+        String deleteLabel= (String)list2.getSelectedValue();
+        marriageModel.removeElement(deleteLabel);
+        OWLNamedIndividual deleteInd = df.getOWLNamedIndividual(IRI.create("http://www.owl.cs.manchester.ac.uk/ontologies/fhkb.owl#"+deleteLabel));
+        OWLEntityRemover remover = new OWLEntityRemover(manager, Collections.singleton(ont));
+        deleteInd.accept(remover);
+        manager.applyChanges(remover.getChanges());
+        remover.reset();
+        try {
+
+            manager.saveOntology(ont);
+        } catch (OWLOntologyStorageException ex) {
+            Logger.getLogger(LoadOntology.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }                                              
     
     public void setModifiedMarriageValues(String mLabel, String fLabel, String my, String ontID,String preMLabel ,DefaultListModel mm)
     {
@@ -1581,6 +1667,8 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
        manager.addAxiom(ont, assertion1);
        OWLAxiom assertion2 = df.getOWLObjectPropertyAssertionAxiom(hasFemalePartner, marriageInd, femalePartner);
        manager.addAxiom(ont, assertion2);
+       OWLAxiom assertion3 = df.getOWLDataPropertyAssertionAxiom(hasMarriageYear, marriageInd, Integer.parseInt(my));
+        manager.addAxiom(ont, assertion3);
        
        marriageModel.addElement(newMarriageLabel);
        list2.setModel(marriageModel); 
@@ -1741,9 +1829,11 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JMenuItem FhMax;
     private javax.swing.JMenuItem FhMin;
     private javax.swing.JTextField LName;
+    private javax.swing.JRadioButton ancestorsQ;
     private javax.swing.JTextField birth;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JRadioButton childQ;
     private javax.swing.JTextField death;
     private javax.swing.JButton deleteButton;
     private javax.swing.JButton deleteMarriage;
@@ -1815,8 +1905,6 @@ public class LoadOntology extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JRadioButton jRadioButton5;
     private javax.swing.JRadioButton jRadioButton6;
     private javax.swing.JRadioButton jRadioButton7;
     private javax.swing.JRadioButton jRadioButton8;
